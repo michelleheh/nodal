@@ -80,6 +80,26 @@ module.exports = (function() {
     }
 
     /**
+    * Finds the first record matching data, and return the model found. If no record found, create a new record and return the model.
+    * @param {object} data The data to load into the object.
+    * @param {function({Error} err, {Nodal.Model} model)} callback The callback to execute upon completion
+    */
+    static findOneAndCreate(data, callback) {
+
+      new Composer(this)
+        .where(data)
+        .end((err, models) => {
+          if (err) return callback(err);
+          if (models[0]) {
+            callback(err, models[0]);
+          } else {
+            let model = new this(data);
+            model.save(callback);
+          }
+        });
+    }
+
+    /**
     * Finds and updates a model with a specified id. Return a notFound error if model does not exist.
     * @param {number} id The id of the model you're looking for
     * @param {object} data The data to load into the object.
