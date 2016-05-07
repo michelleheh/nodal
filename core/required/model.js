@@ -84,7 +84,7 @@ module.exports = (function() {
     * @param {object} data The data to load into the object.
     * @param {function({Error} err, {Nodal.Model} model)} callback The callback to execute upon completion
     */
-    static findOneAndCreate(data, callback) {
+    static findOrCreate(data, callback) {
 
       new Composer(this)
         .where(data)
