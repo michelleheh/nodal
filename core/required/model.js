@@ -68,6 +68,34 @@ module.exports = (function() {
     }
 
     /**
+    * Finds a model with a provided field, value pair. Returns the first found.
+    * @param {string} field Name of the field
+    * @param {any} value Value of the named field to compare against
+    * @param {function({Error} err, {Nodal.Model} model)} callback The callback to execute upon completion
+    */
+    static findBy(field, value, callback) {
+
+      let db = this.prototype.db;
+      let query = {};
+      query[field] = value;
+
+      return new Composer(this)
+        .where(query)
+        .end((err, models) => {
+
+          if (!err && !models.length) {
+            let err = new Error(`Could not find ${this.name} with ${field} "${value}".`);
+            err.notFound = true;
+            return callback(err);
+          }
+
+          callback(err, models[0]);
+
+        });
+
+    }
+    
+    /**
     * Creates a new model instance using the provided data.
     * @param {object} data The data to load into the object.
     * @param {function({Error} err, {Nodal.Model} model)} callback The callback to execute upon completion
